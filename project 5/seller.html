@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LamzyStore - Seller Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3a86ff;
+            --primary-light: #e6f0ff;
+            --primary-dark: #2667cc;
+            --secondary: #ff006e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --danger: #e63946;
+            --border-radius: 10px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .seller-header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        .seller-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .seller-nav a {
+            margin-left: 25px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .seller-nav a:hover {
+            color: var(--primary);
+        }
+
+        .seller-nav a i {
+            margin-right: 8px;
+        }
+
+        .seller-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            padding: 8px 15px;
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+        }
+
+        .seller-profile img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .seller-profile span {
+            font-weight: 500;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 10px 0;
+            min-width: 180px;
+            display: none;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .profile-dropdown a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+
+        .profile-dropdown a:hover {
+            background-color: var(--light-gray);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 25px 0;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Dashboard Page */
+        .dashboard-title {
+            font-size: 28px;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-icon.earnings {
+            background-color: var(--success);
+        }
+
+        .stat-icon.orders {
+            background-color: var(--primary);
+        }
+
+        .stat-icon.products {
+            background-color: var(--secondary);
+        }
+
+        .stat-info h3 {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .stat-change {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* Recent Orders */
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-all {
+            font-size: 14px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--primary-light);
+        }
+
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: var(--light);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-processing {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .status-shipped {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: #dde1e5;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Products Page */
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .product-details {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .product-description {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .product-stock {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .product-stock.in-stock {
+            color: var(--success);
+        }
+
+        .product-stock.out-of-stock {
+            color: var(--danger);
+        }
+
+        /* Add Product Form */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .form-subtitle {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .image-upload {
+            border: 2px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+        }
+
+        .image-upload i {
+            font-size: 48px;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .image-upload p {
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .image-upload small {
+            color: #aaa;
+        }
+
+        .image-preview {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* Orders Page */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            background-color: white;
+            font-size: 14px;
+        }
+
+        /* Authentication Pages */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-light);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 50px;
+            box-shadow: var(--shadow);
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo .logo {
+            font-size: 32px;
+            justify-content: center;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
+        }
+
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                position: fixed;
+                top: 80px;
+                left: -250px;
+                z-index: 100;
+                transition: var(--transition);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                position: relative;
+            }
+
+            .overlay {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 99;
+                display: none;
+            }
+
+            .overlay.active {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .seller-nav {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .form-container, .auth-container {
+                padding: 30px 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .products-header, .form-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .products-header .btn {
+                width: 100%;
+            }
+
+            .form-actions .btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Pages -->
+    <div id="authSection" class="auth-page">
+        <div class="auth-container">
+            <div class="auth-logo">
+                <a href="#" class="logo">
+                    <i class="fas fa-store"></i>
+                    LamzyStore Seller
+                </a>
+            </div>
+            
+            <h2 class="auth-title">Seller Portal</h2>
+            <p class="auth-subtitle">Manage your products and orders in one place</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="showAuthTab('register')">Register</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail" class="form-label">Email Address</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="seller@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">
+                    <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+                </button>
+                
+                <div class="form-footer">
+                    Don't have an account? <a href="#" onclick="showAuthTab('register')">Register here</a>
+                </div>
+            </form>
+            
+            <!-- Registration Form -->
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="regName" class="form-label">Full Name</label>
+                    <input type="text" id="regName" class="form-control" placeholder="John Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regEmail" class="form-label">Email Address</label>
+                    <input type="email" id="regEmail" class="form-control" placeholder="seller@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPhone" class="form-label">Phone Number</label>
+                    <input type="tel" id="regPhone" class="form-control" placeholder="+1 (123) 456-7890">
+                </div>
+                
+                <div class="form-group">
+                    <label for="regStoreName" class="form-label">Store Name</label>
+                    <input type="text" id="regStoreName" class="form-control" placeholder="My Awesome Store" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPassword" class="form-label">Password</label>
+                    <input type="password" id="regPassword" class="form-control" placeholder="Create a strong password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regConfirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" id="regConfirmPassword" class="form-control" placeholder="Confirm your password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">
+                    <i class="fas fa-user-plus"></i> Create Seller Account
+                </button>
+                
+                <div class="form-footer">
+                    Already have an account? <a href="#" onclick="showAuthTab('login')">Login here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard (Initially Hidden) -->
+    <div id="dashboardSection" style="display: none;">
+        <!-- Header -->
+        <header class="seller-header">
+            <div class="container header-content">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    LamzyStore Seller
+                </div>
+                
+                <nav class="seller-nav">
+                    <a href="#" onclick="showPage('dashboard')">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="#" onclick="showPage('products')">
+                        <i class="fas fa-box-open"></i> Products
+                    </a>
+                    <a href="#" onclick="showPage('orders')">
+                        <i class="fas fa-shopping-cart"></i> Orders
+                    </a>
+                </nav>
+                
+                <div class="seller-profile" id="sellerProfile">
+                    <img src="https://ui-avatars.com/api/?name=Seller+Store&background=3a86ff&color=fff" alt="Seller">
+                    <span id="sellerName">Seller Store</span>
+                    <i class="fas fa-chevron-down"></i>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> Profile</a>
+                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+                
+                <div class="hamburger" id="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar" id="sidebar">
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="#" onclick="showPage('dashboard')" class="active">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showPage('products')">
+                            <i class="fas fa-box-open"></i> Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showPage('add-product')">
+                            <i class="fas fa-plus-circle"></i> Add Product
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showPage('orders')">
+                            <i class="fas fa-shopping-cart"></i> Orders
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showPage('earnings')">
+                            <i class="fas fa-chart-line"></i> Earnings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showPage('profile')">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Overlay for Mobile -->
+            <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Page -->
+                <section id="dashboard" class="page active">
+                    <h1 class="dashboard-title">Dashboard Overview</h1>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon earnings">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Earnings</h3>
+                                <div class="stat-value" id="totalEarnings">$2,845.60</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 12.5% from last month
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon orders">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Orders</h3>
+                                <div class="stat-value" id="totalOrders">48</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 8 orders this week
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon products">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Products Listed</h3>
+                                <div class="stat-value" id="totalProducts">24</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 3 new this month
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-title">
+                        <h2>Recent Orders</h2>
+                        <a href="#" onclick="showPage('orders')" class="view-all">View All</a>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentOrders">
+                                <!-- Recent orders will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Products Page -->
+                <section id="products" class="page">
+                    <div class="products-header">
+                        <h1 class="dashboard-title">My Products</h1>
+                        <button class="btn btn-primary" onclick="showPage('add-product')">
+                            <i class="fas fa-plus"></i> Add New Product
+                        </button>
+                    </div>
+                    
+                    <div class="products-grid" id="productsList">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Add Product Page -->
+                <section id="add-product" class="page">
+                    <div class="form-container">
+                        <h2 class="form-title">Add New Product</h2>
+                        <p class="form-subtitle">Fill in the details of your product to list it for sale</p>
+                        
+                        <form id="productForm">
+                            <div class="form-group">
+                                <label for="productName" class="form-label">Product Name</label>
+                                <input type="text" id="productName" class="form-control" placeholder="Enter product name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productDescription" class="form-label">Product Description</label>
+                                <textarea id="productDescription" class="form-control" placeholder="Describe your product in detail" required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productPrice" class="form-label">Price ($)</label>
+                                <input type="number" id="productPrice" class="form-control" placeholder="0.00" min="0" step="0.01" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productStock" class="form-label">Stock Quantity</label>
+                                <input type="number" id="productStock" class="form-control" placeholder="0" min="0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Product Image</label>
+                                <div class="image-upload" onclick="document.getElementById('productImageInput').click()">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Click to upload product image</p>
+                                    <small>Recommended size: 800x800px. Max size: 5MB</small>
+                                </div>
+                                <input type="file" id="productImageInput" accept="image/*" style="display: none;">
+                                
+                                <div class="image-preview" id="imagePreview">
+                                    <img id="previewImage" src="" alt="Preview">
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="showPage('products')">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Product
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Orders Page -->
+                <section id="orders" class="page">
+                    <h1 class="dashboard-title">Order Management</h1>
+                    
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Status:</label>
+                            <select class="filter-select" id="statusFilter" onchange="filterOrders()">
+                                <option value="all">All Orders</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Date Range:</label>
+                            <input type="date" class="filter-select" id="startDate">
+                            <span>to</span>
+                            <input type="date" class="filter-select" id="endDate">
+                        </div>
+                        
+                        <button class="btn btn-secondary" onclick="resetFilters()">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTable">
+                                <!-- Orders will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Earnings Page -->
+                <section id="earnings" class="page">
+                    <h1 class="dashboard-title">Earnings Overview</h1>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon earnings">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>This Month</h3>
+                                <div class="stat-value">$845.60</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 8.2% from last month
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon earnings">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Last Month</h3>
+                                <div class="stat-value">$782.40</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon earnings">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Earnings</h3>
+                                <div class="stat-value">$2,845.60</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container" style="margin-top: 30px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Order ID</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="earningsTable">
+                                <!-- Earnings will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Profile Page -->
+                <section id="profile" class="page">
+                    <div class="form-container">
+                        <h2 class="form-title">Seller Profile</h2>
+                        <p class="form-subtitle">Manage your account information</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Profile Picture</label>
+                            <div class="image-upload" onclick="document.getElementById('profileImageInput').click()" style="width: 150px; height: 150px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-camera" style="font-size: 24px;"></i>
+                            </div>
+                            <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profileName" class="form-label">Full Name</label>
+                            <input type="text" id="profileName" class="form-control" value="John Seller">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profileEmail" class="form-label">Email Address</label>
+                            <input type="email" id="profileEmail" class="form-control" value="seller@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profileStore" class="form-label">Store Name</label>
+                            <input type="text" id="profileStore" class="form-control" value="Tech Gadgets Store">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profilePhone" class="form-label">Phone Number</label>
+                            <input type="tel" id="profilePhone" class="form-control" value="+1 (123) 456-7890">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profileAddress" class="form-label">Store Address</label>
+                            <textarea id="profileAddress" class="form-control">123 Commerce Street, Business City, BC 10001</textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="showPage('dashboard')">
+                                Cancel
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="updateProfile()">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const state = {
+            currentSeller: null,
+            products: [],
+            orders: [],
+            isLoggedIn: false
+        };
+
+        // Sample Data
+        const sampleProducts = [
+            { id: 1, name: "Wireless Bluetooth Headphones", description: "High-quality wireless headphones with noise cancellation", price: 79.99, stock: 25, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { id: 2, name: "Smart Watch Series 5", description: "Latest smartwatch with fitness tracking and notifications", price: 249.99, stock: 12, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w-800&q=80" },
+            { id: 3, name: "Laptop Backpack", description: "Water-resistant laptop backpack with USB charging port", price: 49.99, stock: 40, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { id: 4, name: "USB-C Hub", description: "7-in-1 USB-C Hub with 4K HDMI, Ethernet, and card readers", price: 39.99, stock: 18, image: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
+        ];
+
+        const sampleOrders = [
+            { id: "ORD-001", customer: "John Doe", date: "2023-10-15", items: 2, amount: 159.98, status: "delivered" },
+            { id: "ORD-002", customer: "Jane Smith", date: "2023-10-14", items: 1, amount: 249.99, status: "shipped" },
+            { id: "ORD-003", customer: "Bob Johnson", date: "2023-10-13", items: 3, amount: 139.97, status: "processing" },
+            { id: "ORD-004", customer: "Alice Brown", date: "2023-10-12", items: 1, amount: 49.99, status: "pending" },
+            { id: "ORD-005", customer: "Charlie Wilson", date: "2023-10-10", items: 2, amount: 89.98, status: "delivered" }
+        ];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved data from localStorage
+            loadFromStorage();
+            
+            // Check if seller is logged in
+            if (state.isLoggedIn && state.currentSeller) {
+                showDashboard();
+            } else {
+                showAuth();
+            }
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Load initial data
+            if (state.isLoggedIn) {
+                loadDashboardData();
+            }
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Registration form
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+            
+            // Product form
+            document.getElementById('productForm').addEventListener('submit', handleAddProduct);
+            
+            // Image upload
+            document.getElementById('productImageInput').addEventListener('change', handleImageUpload);
+            
+            // Profile image upload
+            document.getElementById('profileImageInput').addEventListener('change', handleProfileImageUpload);
+            
+            // Seller profile dropdown
+            document.getElementById('sellerProfile').addEventListener('click', toggleProfileDropdown);
+            
+            // Hamburger menu
+            document.getElementById('hamburger').addEventListener('click', toggleSidebar);
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const profile = document.getElementById('sellerProfile');
+                const dropdown = document.getElementById('profileDropdown');
+                if (!profile.contains(event.target) && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        }
+
+        // Show authentication section
+        function showAuth() {
+            document.getElementById('authSection').style.display = 'flex';
+            document.getElementById('dashboardSection').style.display = 'none';
+        }
+
+        // Show dashboard section
+        function showDashboard() {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            loadDashboardData();
+        }
+
+        // Show specific page in dashboard
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show requested page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update sidebar active link
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Set active link based on page
+            const sidebarLinks = {
+                'dashboard': '.sidebar-menu a[href="#"]',
+                'products': '.sidebar-menu a:nth-child(2)',
+                'add-product': '.sidebar-menu a:nth-child(3)',
+                'orders': '.sidebar-menu a:nth-child(4)',
+                'earnings': '.sidebar-menu a:nth-child(5)',
+                'profile': '.sidebar-menu a:nth-child(6)'
+            };
+            
+            if (sidebarLinks[pageId]) {
+                document.querySelector(sidebarLinks[pageId]).classList.add('active');
+            }
+            
+            // Close sidebar on mobile
+            closeSidebar();
+            
+            // Load data for specific pages
+            if (pageId === 'products') {
+                loadProducts();
+            } else if (pageId === 'orders') {
+                loadOrders();
+            } else if (pageId === 'earnings') {
+                loadEarnings();
+            }
+        }
+
+        // Toggle authentication tabs
+        function showAuthTab(tab) {
+            // Update active tab
+            document.querySelectorAll('.auth-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            
+            if (tab === 'login') {
+                document.querySelector('.auth-tab:nth-child(1)').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+                document.getElementById('registerForm').classList.remove('active');
+            } else {
+                document.querySelector('.auth-tab:nth-child(2)').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+                document.getElementById('loginForm').classList.remove('active');
+            }
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Simple validation
+            if (!email || !password) {
+                showNotification('Please enter both email and password', 'error');
+                return;
+            }
+            
+            // Mock authentication - in real app, this would be API call
+            if (password.length < 6) {
+                showNotification('Invalid credentials', 'error');
+                return;
+            }
+            
+            // Set current seller
+            state.currentSeller = {
+                name: "Seller Store",
+                email: email,
+                storeName: "Tech Gadgets Store"
+            };
+            
+            state.isLoggedIn = true;
+            
+            // Save to localStorage
+            saveToStorage();
+            
+            // Show success message
+            showNotification('Login successful!', 'success');
+            
+            // Show dashboard
+            showDashboard();
+            
+            // Reset form
+            event.target.reset();
+        }
+
+        // Handle registration
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const storeName = document.getElementById('regStoreName').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            // Validation
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            // Create seller object
+            state.currentSeller = {
+                name: name,
+                email: email,
+                phone: phone,
+                storeName: storeName
+            };
+            
+            state.isLoggedIn = true;
+            
+            // Initialize seller's products and orders
+            state.products = [...sampleProducts];
+            state.orders = [...sampleOrders];
+            
+            // Save to localStorage
+            saveToStorage();
+            
+            // Show success message
+            showNotification('Registration successful! Welcome to LamzyStore Seller', 'success');
+            
+            // Show dashboard
+            showDashboard();
+            
+            // Reset form
+            event.target.reset();
+            
+            // Switch to login tab for next time
+            showAuthTab('login');
+        }
+
+        // Handle logout
+        function logout() {
+            state.currentSeller = null;
+            state.isLoggedIn = false;
+            
+            // Clear localStorage
+            localStorage.removeItem('lamzyStoreSeller');
+            
+            // Show auth page
+            showAuth();
+            
+            // Show notification
+            showNotification('Logged out successfully', 'info');
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            // Update seller info
+            if (state.currentSeller) {
+                document.getElementById('sellerName').textContent = state.currentSeller.storeName;
+                
+                // Update avatar with store name
+                const avatar = document.querySelector('.seller-profile img');
+                avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(state.currentSeller.storeName)}&background=3a86ff&color=fff`;
+            }
+            
+            // Calculate totals
+            const totalEarnings = state.orders.reduce((sum, order) => sum + order.amount, 0);
+            const totalOrders = state.orders.length;
+            const totalProducts = state.products.length;
+            
+            // Update dashboard stats
+            document.getElementById('totalEarnings').textContent = `$${totalEarnings.toFixed(2)}`;
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('totalProducts').textContent = totalProducts;
+            
+            // Load recent orders (last 5)
+            const recentOrders = state.orders.slice(0, 5);
+            const recentOrdersTable = document.getElementById('recentOrders');
+            recentOrdersTable.innerHTML = '';
+            
+            recentOrders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer}</td>
+                    <td>${formatDate(order.date)}</td>
+                    <td>$${order.amount.toFixed(2)}</td>
+                    <td><span class="status-badge status-${order.status}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" onclick="viewOrder('${order.id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                recentOrdersTable.appendChild(row);
+            });
+            
+            // Load products if on products page
+            if (document.getElementById('products').classList.contains('active')) {
+                loadProducts();
+            }
+        }
+
+        // Load products
+        function loadProducts() {
+            const productsList = document.getElementById('productsList');
+            productsList.innerHTML = '';
+            
+            if (state.products.length === 0) {
+                productsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; grid-column: 1 / -1;">
+                        <i class="fas fa-box-open" style="font-size: 48px; color: #ddd; margin-bottom: 15px;"></i>
+                        <h3 style="color: var(--gray); margin-bottom: 10px;">No products yet</h3>
+                        <p style="color: var(--gray); margin-bottom: 20px;">Start by adding your first product</p>
+                        <button class="btn btn-primary" onclick="showPage('add-product')">
+                            <i class="fas fa-plus"></i> Add Your First Product
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            state.products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-details">
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <div class="product-stock ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}">
+                            ${product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-secondary" onclick="editProduct(${product.id})">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="deleteProduct(${product.id})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productsList.appendChild(productCard);
+            });
+        }
+
+        // Handle add product
+        function handleAddProduct(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('productName').value;
+            const description = document.getElementById('productDescription').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value);
+            
+            // Validation
+            if (!name || !description || !price || !stock) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Create product object
+            const newProduct = {
+                id: state.products.length > 0 ? Math.max(...state.products.map(p => p.id)) + 1 : 1,
+                name: name,
+                description: description,
+                price: price,
+                stock: stock,
+                image: document.getElementById('previewImage').src || 'https://images.unsplash.com/photo-1556656793-08538906a9f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            };
+            
+            // Add to products
+            state.products.push(newProduct);
+            
+            // Save to storage
+            saveToStorage();
+            
+            // Show success message
+            showNotification('Product added successfully!', 'success');
+            
+            // Reset form
+            event.target.reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            
+            // Go back to products page
+            showPage('products');
+        }
+
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Check if file is an image
+            if (!file.type.match('image.*')) {
+                showNotification('Please select an image file', 'error');
+                return;
+            }
+            
+            // Check file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('Image size should be less than 5MB', 'error');
+                return;
+            }
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreview');
+                const previewImage = document.getElementById('previewImage');
+                
+                previewImage.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Handle profile image upload
+        function handleProfileImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Check if file is an image
+            if (!file.type.match('image.*')) {
+                showNotification('Please select an image file', 'error');
+                return;
+            }
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const profileImg = document.querySelector('.seller-profile img');
+                profileImg.src = e.target.result;
+                
+                // Update avatar in sidebar
+                const sidebarAvatar = document.querySelector('.sidebar-menu a.active i');
+                // In a real app, you might update the profile image in the sidebar too
+            };
+            reader.readAsDataURL(file);
+            
+            showNotification('Profile image updated', 'success');
+        }
+
+        // Edit product
+        function editProduct(productId) {
+            const product = state.products.find(p => p.id === productId);
+            if (!product) return;
+            
+            // Populate form with product data
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productDescription').value = product.description;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productStock').value = product.stock;
+            
+            // Set image preview
+            const preview = document.getElementById('imagePreview');
+            const previewImage = document.getElementById('previewImage');
+            previewImage.src = product.image;
+            preview.style.display = 'block';
+            
+            // Change form to edit mode
+            const form = document.getElementById('productForm');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Product';
+            submitBtn.onclick = function(e) {
+                e.preventDefault();
+                updateProduct(productId);
+            };
+            
+            // Go to add product page
+            showPage('add-product');
+        }
+
+        // Update product
+        function updateProduct(productId) {
+            const productIndex = state.products.findIndex(p => p.id === productId);
+            if (productIndex === -1) return;
+            
+            // Update product data
+            state.products[productIndex].name = document.getElementById('productName').value;
+            state.products[productIndex].description = document.getElementById('productDescription').value;
+            state.products[productIndex].price = parseFloat(document.getElementById('productPrice').value);
+            state.products[productIndex].stock = parseInt(document.getElementById('productStock').value);
+            
+            // Update image if changed
+            const previewImage = document.getElementById('previewImage').src;
+            if (previewImage && previewImage.startsWith('data:image')) {
+                state.products[productIndex].image = previewImage;
+            }
+            
+            // Save to storage
+            saveToStorage();
+            
+            // Show success message
+            showNotification('Product updated successfully!', 'success');
+            
+            // Reset form and go back to products
+            document.getElementById('productForm').reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            
+            // Reset form button
+            const submitBtn = document.querySelector('#productForm button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Product';
+            submitBtn.onclick = null;
+            
+            showPage('products');
+        }
+
+        // Delete product
+        function deleteProduct(productId) {
+            if (!confirm('Are you sure you want to delete this product?')) {
+                return;
+            }
+            
+            // Remove product from array
+            state.products = state.products.filter(p => p.id !== productId);
+            
+            // Save to storage
+            saveToStorage();
+            
+            // Show success message
+            showNotification('Product deleted successfully', 'success');
+            
+            // Reload products
+            loadProducts();
+        }
+
+        // Load orders
+        function loadOrders() {
+            const ordersTable = document.getElementById('ordersTable');
+            ordersTable.innerHTML = '';
+            
+            if (state.orders.length === 0) {
+                ordersTable.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-shopping-cart" style="font-size: 48px; color: #ddd; margin-bottom: 15px;"></i>
+                            <h3 style="color: var(--gray); margin-bottom: 10px;">No orders yet</h3>
+                            <p style="color: var(--gray);">Orders will appear here once customers start buying your products</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Apply filters
+            let filteredOrders = [...state.orders];
+            const statusFilter = document.getElementById('statusFilter').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (statusFilter !== 'all') {
+                filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
+            }
+            
+            if (startDate) {
+                filteredOrders = filteredOrders.filter(order => order.date >= startDate);
+            }
+            
+            if (endDate) {
+                filteredOrders = filteredOrders.filter(order => order.date <= endDate);
+            }
+            
+            // Display orders
+            filteredOrders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer}</td>
+                    <td>${formatDate(order.date)}</td>
+                    <td>${order.items}</td>
+                    <td>$${order.amount.toFixed(2)}</td>
+                    <td><span class="status-badge status-${order.status}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-secondary" onclick="viewOrder('${order.id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="updateOrderStatus('${order.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                ordersTable.appendChild(row);
+            });
+        }
+
+        // Load earnings
+        function loadEarnings() {
+            const earningsTable = document.getElementById('earningsTable');
+            earningsTable.innerHTML = '';
+            
+            // Sample earnings data
+            const earningsData = [
+                { date: '2023-10-15', orderId: 'ORD-001', product: 'Wireless Headphones', quantity: 2, amount: 159.98, status: 'delivered' },
+                { date: '2023-10-14', orderId: 'ORD-002', product: 'Smart Watch', quantity: 1, amount: 249.99, status: 'shipped' },
+                { date: '2023-10-13', orderId: 'ORD-003', product: 'USB-C Hub', quantity: 3, amount: 119.97, status: 'processing' },
+                { date: '2023-10-12', orderId: 'ORD-004', product: 'Laptop Backpack', quantity: 1, amount: 49.99, status: 'pending' },
+                { date: '2023-10-10', orderId: 'ORD-005', product: 'Wireless Headphones', quantity: 2, amount: 159.98, status: 'delivered' },
+                { date: '2023-10-08', orderId: 'ORD-006', product: 'Smart Watch', quantity: 1, amount: 249.99, status: 'delivered' }
+            ];
+            
+            earningsData.forEach(earning => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(earning.date)}</td>
+                    <td>${earning.orderId}</td>
+                    <td>${earning.product}</td>
+                    <td>${earning.quantity}</td>
+                    <td>$${earning.amount.toFixed(2)}</td>
+                    <td><span class="status-badge status-${earning.status}">${earning.status.charAt(0).toUpperCase() + earning.status.slice(1)}</span></td>
+                `;
+                earningsTable.appendChild(row);
+            });
+        }
+
+        // View order details
+        function viewOrder(orderId) {
+            const order = state.orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            alert(`Order Details:\n\nOrder ID: ${order.id}\nCustomer: ${order.customer}\nDate: ${formatDate(order.date)}\nItems: ${order.items}\nAmount: $${order.amount.toFixed(2)}\nStatus: ${order.status}`);
+        }
+
+        // Update order status
+        function updateOrderStatus(orderId) {
+            const order = state.orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const newStatus = prompt(`Update status for order ${orderId}:\n\nCurrent status: ${order.status}\n\nEnter new status (pending, processing, shipped, delivered):`, order.status);
+            
+            if (newStatus && ['pending', 'processing', 'shipped', 'delivered'].includes(newStatus.toLowerCase())) {
+                order.status = newStatus.toLowerCase();
+                
+                // Save to storage
+                saveToStorage();
+                
+                // Reload orders
+                loadOrders();
+                
+                // Show success message
+                showNotification(`Order ${orderId} status updated to ${newStatus}`, 'success');
+            }
+        }
+
+        // Filter orders
+        function filterOrders() {
+            loadOrders();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            loadOrders();
+        }
+
+        // Update profile
+        function updateProfile() {
+            const name = document.getElementById('profileName').value;
+            const email = document.getElementById('profileEmail').value;
+            const storeName = document.getElementById('profileStore').value;
+            const phone = document.getElementById('profilePhone').value;
+            const address = document.getElementById('profileAddress').value;
+            
+            // Update seller object
+            state.currentSeller.name = name;
+            state.currentSeller.email = email;
+            state.currentSeller.storeName = storeName;
+            state.currentSeller.phone = phone;
+            state.currentSeller.address = address;
+            
+            // Update UI
+            document.getElementById('sellerName').textContent = storeName;
+            
+            // Save to storage
+            saveToStorage();
+            
+            // Show success message
+            showNotification('Profile updated successfully!', 'success');
+            
+            // Go back to dashboard
+            showPage('dashboard');
+        }
+
+        // Toggle profile dropdown
+        function toggleProfileDropdown(event) {
+            event.stopPropagation();
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        // Close sidebar
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Save to localStorage
+        function saveToStorage() {
+            const data = {
+                currentSeller: state.currentSeller,
+                products: state.products,
+                orders: state.orders,
+                isLoggedIn: state.isLoggedIn
+            };
+            localStorage.setItem('lamzyStoreSeller', JSON.stringify(data));
+        }
+
+        // Load from localStorage
+        function loadFromStorage() {
+            const savedData = localStorage.getItem('lamzyStoreSeller');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                state.currentSeller = data.currentSeller;
+                state.products = data.products || [];
+                state.orders = data.orders || [];
+                state.isLoggedIn = data.isLoggedIn || false;
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Remove existing notification
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            // Style the notification
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${type === 'success' ? '#38b000' : type === 'error' ? '#e63946' : '#3a86ff'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: var(--border-radius);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                min-width: 300px;
+                max-width: 400px;
+                box-shadow: var(--shadow);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            notification.querySelector('button').style.cssText = `
+                background: none;
+                border: none;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                margin-left: 15px;
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 4 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 4000);
+            
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    </script>
+</body>
+</html>
